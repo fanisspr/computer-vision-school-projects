@@ -1,12 +1,21 @@
+'''
+Here's what the code is doing:
+
+1. Load a vocabulary of visual words from the vocabulary.npy file.
+2. Creat or load a bag-of-words representation-test index from the index_test.npy file.
+3. Create or load the test image paths from the index_paths_test.txt file.
+4. Create the test labels from the labels function.
+5. Load the SVM classifiers from the svm_<class_name>.dat files.
+6. For each test image, predict the class using the SVM classifiers.
+7. Calculate the classification accuracy.
+'''
+
 import os
 import cv2 as cv
 import numpy as np
 import json
 from functions import *
 
-
-# train_folders = ['imagedb_train/069.fighter-jet', 'imagedb_train/145.motorbikes-101', 'imagedb_train/178.school-bus', 'imagedb_train/224.touring-bike', 'imagedb_train/251.airplanes-101', 'imagedb_train/252.car-side-101']
-# test_folders = ['imagedb_test/069.fighter-jet', 'imagedb_test/145.motorbikes-101', 'imagedb_test/178.school-bus', 'imagedb_test/224.touring-bike', 'imagedb_test/251.airplanes-101', 'imagedb_test/252.car-side-101']
 
 root_dir = os.path.relpath(os.path.dirname(__file__))
 train_dir = os.path.join(root_dir, 'imagedb_train')
@@ -43,11 +52,8 @@ else:
         img_paths_test = json.load(file)
     print('Test Index is loaded')
 
-# make test_labels
 test_labels = labels(img_paths_test)
-
 classes = os.listdir(train_dir)
-
 svm = cv.ml.SVM_create()
 class_predictions = []
 for i, bow_desc in enumerate(bow_descs_test):

@@ -1,3 +1,13 @@
+'''
+Here's what the code is doing:
+
+1. Create a vocabulary of visual words by clustering extracted SIFT descriptors, or load one.
+2. Create a bag-of-words representation-index for each image by counting the number of occurrences of each visual word in the image, or load one.
+3. Train a KNN classifier using the bag-of-words representations-train index.
+4. Evaluate the classifier on the test set.
+5. Calculate the classification accuracy.
+'''
+
 import os
 import cv2 as cv
 import numpy as np
@@ -60,10 +70,7 @@ else:
         img_paths_test = json.load(file)
     print('Test Index is loaded')
 
-# make train_labels
 train_labels = labels(img_paths_train)
-
-# make test_labels
 test_labels = labels(img_paths_test)
 
 Knn_classes = Knn(5, bow_descs_test, bow_descs_trained, train_labels)

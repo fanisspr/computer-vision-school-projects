@@ -1,26 +1,35 @@
+'''
+Here's what the code is doing:
+
+1. Create a vocabulary of visual words by clustering extracted SIFT descriptors, or load one.
+2. Create a bag-of-words representation-index for each image by counting the number of occurrences of each visual word in the image, or load one.
+3. Train a linear SVM classifier for each class.
+'''
+
 import os
 import cv2 as cv
 import numpy as np
 import json
 from functions import *
 
-# train_folders = ['imagedb_train/069.fighter-jet', 'imagedb_train/145.motorbikes-101', 'imagedb_train/178.school-bus', 'imagedb_train/224.touring-bike', 'imagedb_train/251.airplanes-101', 'imagedb_train/252.car-side-101']
 
 root_dir = os.path.relpath(os.path.dirname(__file__))
 train_dir = os.path.join(root_dir, 'imagedb_train')
-train_folders = [os.path.join(train_dir, subdir) for subdir in os.listdir(train_dir)]
+train_folders = [os.path.join(train_dir, subdir)
+                 for subdir in os.listdir(train_dir)]
 
 sift = cv.SIFT_create()
 
-#create or load vocabulary
+# create or load vocabulary
 vocab_filename = os.path.join(root_dir, 'vocabulary.npy')
 if not os.path.exists(vocab_filename):
     print('Creating vocabulary...')
-    vocabulary = create_vocabulary(extract_train_descriptors(train_folders, sift))
+    vocabulary = create_vocabulary(
+        extract_train_descriptors(train_folders, sift))
     np.save(vocab_filename, vocabulary)
-    print('Vocabulary is created')    
+    print('Vocabulary is created')
 else:
-    vocabulary = np.load(os.path.join(root_dir,'vocabulary.npy'))
+    vocabulary = np.load(os.path.join(root_dir, 'vocabulary.npy'))
     print('Vocabulary is loaded')
 
 # Create train Index or load if exists
