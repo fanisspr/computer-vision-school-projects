@@ -12,14 +12,16 @@ root_dir = os.path.relpath(os.path.dirname(__file__))
 train_dir = os.path.join(root_dir, 'imagedb_train')
 test_dir = os.path.join(root_dir, 'imagedb_test')
 
-train_folders = [os.path.join(train_dir, subdir) for subdir in os.listdir(train_dir)]
-test_folders = [os.path.join(test_dir, subdir) for subdir in os.listdir(test_dir)]
+train_folders = [os.path.join(train_dir, subdir)
+                 for subdir in os.listdir(train_dir)]
+test_folders = [os.path.join(test_dir, subdir)
+                for subdir in os.listdir(test_dir)]
 
 sift = cv.SIFT_create()
 
 # Load vocabulary
 try:
-    vocabulary = np.load(os.path.join(root_dir,'vocabulary.npy'))
+    vocabulary = np.load(os.path.join(root_dir, 'vocabulary.npy'))
     print('Vocabulary is loaded')
 except:
     FileNotFoundError
@@ -29,7 +31,8 @@ index_test_filename = os.path.join(root_dir, 'index_test.npy')
 index_paths_test_filename = os.path.join(root_dir, 'index_paths_test.txt')
 if not os.path.exists(index_test_filename):
     print('Creating test index...')
-    bow_descs_test, img_paths_test = create_index(test_folders, vocabulary, sift, crossCheck=False)
+    bow_descs_test, img_paths_test = create_index(
+        test_folders, vocabulary, sift, crossCheck=False)
     np.save(index_test_filename, bow_descs_test)
     with open(index_paths_test_filename, mode='w+') as file:
         json.dump(img_paths_test, file)
@@ -51,11 +54,11 @@ for i, bow_desc in enumerate(bow_descs_test):
     responses = []
     for cls in classes:
         svm_cls = svm.load(os.path.join(root_dir, 'svm_') + cls)
-        response = svm_cls.predict(np.reshape(bow_desc.astype(np.float32), (1,-1)), 
-                                    flags=cv.ml.STAT_MODEL_RAW_OUTPUT)
+        response = svm_cls.predict(np.reshape(bow_desc.astype(np.float32), (1, -1)),
+                                   flags=cv.ml.STAT_MODEL_RAW_OUTPUT)
         responses.append(min(response[1]))
     min_arg = np.argmin(responses)
-    
+
     class_predictions.append(classes[min_arg])
     print(img_paths_test[i], end=' -> ')
     if min_arg == 0:
@@ -72,6 +75,6 @@ for i, bow_desc in enumerate(bow_descs_test):
         print('It is a car-side')
 
 Acc = classification_accuracy(class_predictions, test_labels)
+print("Classification accuracy: ", Acc)
 
 print('Svm classification finished')
-
