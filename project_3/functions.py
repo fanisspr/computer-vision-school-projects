@@ -161,6 +161,26 @@ def classification_accuracy(predictions: list, test_labels: list) -> float:
     return accuracy
 
 
+def classification_accuracy(predictions: list, test_labels: list) -> float:
+    """
+    Calculates the classification accuracy by comparing the predicted labels with the true labels.
+
+    Parameters:
+    predictions (list): A list of predicted labels.
+    test_labels (list): A list of true labels.
+
+    Returns:
+    float: The classification accuracy as a percentage.
+    """
+    correct = 0
+    for i in range(len(test_labels)):
+        if test_labels[i] == predictions[i]:
+            correct += 1
+    accuracy = correct / float(len(test_labels)) * 100.0
+
+    return accuracy
+
+
 def labels(img_paths: list) -> list:
     """
     Extracts the labels from the image paths.
