@@ -18,6 +18,8 @@ from functions import *
 
 
 root_dir = os.path.relpath(os.path.dirname(__file__))
+index_dir = os.path.join(root_dir, 'index')
+models_dir = os.path.join(root_dir, 'models')
 train_dir = os.path.join(root_dir, 'imagedb_train')
 test_dir = os.path.join(root_dir, 'imagedb_test')
 
@@ -30,14 +32,14 @@ sift = cv.SIFT_create()
 
 # Load vocabulary
 try:
-    vocabulary = np.load(os.path.join(root_dir, 'vocabulary.npy'))
+    vocabulary = np.load(os.path.join(index_dir, 'vocabulary.npy'))
     print('Vocabulary is loaded')
 except:
     FileNotFoundError
 
 # create test Index or load if exists
-index_test_filename = os.path.join(root_dir, 'index_test.npy')
-index_paths_test_filename = os.path.join(root_dir, 'index_paths_test.txt')
+index_test_filename = os.path.join(index_dir, 'index_test.npy')
+index_paths_test_filename = os.path.join(index_dir, 'index_paths_test.txt')
 if not os.path.exists(index_test_filename):
     print('Creating test index...')
     bow_descs_test, img_paths_test = create_index(
@@ -59,7 +61,7 @@ class_predictions = []
 for i, bow_desc in enumerate(bow_descs_test):
     responses = []
     for cls in classes:
-        svm_cls = svm.load(os.path.join(root_dir, 'svm_') + cls)
+        svm_cls = svm.load(os.path.join(models_dir, 'svm_') + cls)
         response = svm_cls.predict(np.reshape(bow_desc.astype(np.float32), (1, -1)),
                                    flags=cv.ml.STAT_MODEL_RAW_OUTPUT)
         responses.append(min(response[1]))
